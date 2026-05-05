@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartes Eau'bservatoire</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #011e28;
+      color: #f1fcfd;
+    }
+
+    .map-section {
+      padding: 32px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .map-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #7ed4e6;
+      margin-bottom: 12px;
+    }
+
+    .map-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .map-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(126, 212, 230, 0.15);
+    }
+
+    /* Carte 1 — Story Map (ratio 16:9) */
+    .map-wrapper--story {
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+    .map-wrapper--story iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* Cartes 2 & 3 — MapViewer fixes */
+    .map-wrapper--viewer iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      display: block;
+    }
+
+    .map-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(126,212,230,0.08);
+      border: 1px solid rgba(126,212,230,0.2);
+      border-radius: 3px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: rgba(126,212,230,0.18);
+      border-color: #7ed4e6;
+      color: #ffffff;
+    }
+
+    /* Panneau onglets pour les 2 mapviewers */
+    .viewer-panel { display: none; }
+    .viewer-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- ── CARTE 1 : Story Map ── -->
+  <div class="map-section">
+    <p class="map-label">Narration cartographique</p>
+    <p class="map-title">Story Map — Eau'bservatoire</p>
+    <div class="map-wrapper map-wrapper--story">
+      <iframe
+        src="https://storymaps.arcgis.com/stories/36fd4945e841459a82264b8ce1ae81d9"
+        allowfullscreen
+        allow="geolocation"
+        loading="lazy"
+        title="Story Map Eau'bservatoire">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- ── CARTES 2 & 3 : MapViewer (onglets) ── -->
+  <div class="map-section">
+    <p class="map-label">Cartographie interactive</p>
+    <p class="map-title">Campus TPG — Base cartographique</p>
+
+    <div class="map-tabs">
+      <button class="tab-btn active" onclick="showViewer('vue-large', this)">
+        Vue large
+      </button>
+      <button class="tab-btn" onclick="showViewer('vue-detail', this)">
+        Vue détaillée
+      </button>
+    </div>
+
+    <div id="vue-large" class="viewer-panel active">
+      <div class="map-wrapper map-wrapper--viewer">
+        <iframe
+          allow="local-network-access; geolocation"
+          title="CARTO_BASE_EAUBS — Vue large"
+          src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?configurableview=true&webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark&legend=true&scroll=false&basemaps=true&center=-0.607684590427117,44.8003442281803&scale=18055.9548215"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+    <div id="vue-detail" class="viewer-panel">
+      <div class="map-wrapper map-wrapper--viewer">
+        <iframe
+          allow="local-network-access; geolocation"
+          title="CARTO_BASE_EAUBS — Vue détaillée"
+          src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?configurableview=true&webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark&legend=true&scroll=false&center=-0.6076845904271172,44.800435581980196&scale=18055.9548215"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showViewer(panelId, btn) {
+      document.querySelectorAll('.viewer-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(panelId).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
