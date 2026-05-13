@@ -12,23 +12,19 @@
     :root {
       --c-deep:    #011e28;
       --c-primary: #0a3a50;
-      --c-mid:     #2A8A9D;
+      --c-mid:      #2A8A9D;
       --c-light:   #3F9DB4;
       --c-teal:    #1B726E;
       --c-accent:  #7ed4e6;
       --c-cream:   #f1fcfd;
-      --c-paper:   #ffffff;
-      --c-muted:   rgba(241,252,253,0.55);
       --c-line:    rgba(126,212,230,0.15);
-      --font-serif: 'Playfair Display', Georgia, serif;
       --font-sans:  'DM Sans', system-ui, sans-serif;
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --radius: 10px;
     }
 
+    /* Reset total pour coller aux bords comme le modèle 3D */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font-sans);
@@ -36,401 +32,162 @@
       color: var(--c-cream);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      padding: 40px 32px 64px;
+      padding: 0; /* Suppression du padding du body */
+      overflow-x: hidden;
     }
 
-    /* ── PAGE HEADER ── */
-    .page-header {
-      max-width: 1440px;
-      margin: 0 auto 48px;
-      padding-bottom: 28px;
-      border-bottom: 1px solid var(--c-line);
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    .page-header-left .eyebrow {
-      font-size: 0.62rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--c-accent);
-      margin-bottom: 8px;
-    }
-
-    .page-header-left h1 {
-      font-family: var(--font-serif);
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 400;
-      color: #ffffff;
-      line-height: 1.2;
-    }
-
-    .page-header-left h1 span {
-      color: var(--c-accent);
-      font-style: italic;
-    }
-
-    .page-header-right {
-      font-size: 0.75rem;
-      color: var(--c-muted);
-      text-align: right;
-      line-height: 1.6;
-    }
-
-    /* ── MAP STACK ── */
+    /* Conteneur principal sans marge haute inutile */
     .map-stack {
-      max-width: 1440px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 100%; /* Occupation totale de la largeur */
+      margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 32px;
     }
 
-    /* ── MAP CARD ── */
+    /* ── MAP CARD MODIFIÉE ── */
     .map-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--c-line);
-      border-radius: var(--radius);
+      background: var(--c-deep);
+      border: none; /* Suppression des bordures pour fusionner avec le fond */
+      border-radius: 0; 
       overflow: hidden;
-      transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
     }
 
-    .map-card:hover {
-      border-color: rgba(126,212,230,0.35);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(126,212,230,0.08) inset;
-    }
-
-    /* ── CARD HEADER ── */
+    /* CARD HEADER : Inspiré de la topbar du modèle 2 */
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 24px;
+      padding: 12px 20px;
       border-bottom: 1px solid var(--c-line);
-      background: rgba(0,0,0,0.2);
+      background: rgba(10, 10, 30, 0.92); /* Couleur de la topbar du modèle 2 */
       gap: 16px;
+      height: 56px;
     }
 
-    .card-header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .card-header-left { display: flex; align-items: center; gap: 12px; }
 
     .card-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, rgba(42,138,157,0.3), rgba(27,114,110,0.3));
-      border: 1px solid rgba(126,212,230,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
+      font-size: 1.2rem;
       flex-shrink: 0;
     }
 
     .card-meta .card-label {
       font-size: 0.6rem;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--c-accent);
-      margin-bottom: 3px;
     }
 
     .card-meta .card-title {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: rgba(255,255,255,0.9);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
     }
 
-    /* Dot status */
-    .status-dot {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.68rem;
-      color: var(--c-muted);
-      flex-shrink: 0;
-    }
-
-    .status-dot::before {
-      content: '';
-      display: block;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 8px rgba(74,222,128,0.6);
-      animation: pulse-dot 2.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    /* ── MAP EMBED AREA ── */
-    .map-embed {
-      position: relative;
-      width: 100%;
-      background: #000d14;
-    }
-
-    /* Story Map — ratio 16:9 */
-    .map-embed--ratio {
-      padding-bottom: 56.25%;
-      height: 0;
-    }
-
-    .map-embed--ratio iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    /* MapViewer — hauteur fixe */
-    .map-embed--fixed iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
-      display: block;
-    }
-
-    /* ── TABS (pour les 2 MapViewers) ── */
+    /* ── TABS : Style épuré ── */
     .card-tabs {
       display: flex;
-      gap: 0;
+      background: rgba(0,0,0,0.2);
+      padding: 0 10px;
       border-bottom: 1px solid var(--c-line);
-      background: rgba(0,0,0,0.15);
     }
 
     .tab-btn {
-      padding: 11px 22px;
+      padding: 12px 20px;
       font-family: var(--font-sans);
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 600;
       color: var(--c-muted);
       background: transparent;
       border: none;
       border-bottom: 2px solid transparent;
       cursor: pointer;
-      transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
-      position: relative;
-      bottom: -1px;
+      transition: all 0.2s;
     }
-
-    .tab-btn:hover { color: rgba(255,255,255,0.75); }
 
     .tab-btn.active {
       color: var(--c-accent);
       border-bottom-color: var(--c-accent);
     }
 
-    .viewer-panel { display: none; }
-    .viewer-panel.active { display: block; }
-
-    /* ── CARD FOOTER ── */
-    .card-footer {
-      padding: 12px 24px;
-      border-top: 1px solid var(--c-line);
-      background: rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+    /* ── MAP EMBED : Pleine hauteur ── */
+    .map-embed--fixed iframe {
+      width: 100%;
+      height: calc(100vh - 110px); /* Ajuste la hauteur pour remplir l'écran moins le header/tabs */
+      border: none;
+      display: block;
     }
 
-    .card-footer-info {
-      font-size: 0.68rem;
-      color: var(--c-muted);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .card-footer-info span::before {
-      content: '·';
-      margin-right: 8px;
-      opacity: 0.4;
-    }
-
-    .card-footer-info span:first-child::before { content: ''; margin: 0; }
-
-    .btn-open {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      font-family: var(--font-sans);
-      font-size: 0.68rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--c-accent);
-      background: rgba(126,212,230,0.06);
-      border: 1px solid rgba(126,212,230,0.2);
-      border-radius: 4px;
-      text-decoration: none;
-      transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
-      white-space: nowrap;
-    }
-
-    .btn-open:hover {
-      background: rgba(126,212,230,0.14);
-      border-color: rgba(126,212,230,0.45);
-    }
-
-    .btn-open svg {
-      width: 11px; height: 11px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* ── LOADING OVERLAY ── */
-    .map-embed { isolation: isolate; }
-
+    /* Loader */
     .map-loading {
       position: absolute;
       inset: 0;
+      background: var(--c-deep);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      background: #000d14;
       z-index: 10;
-      transition: opacity 0.5s var(--ease);
-      pointer-events: none;
     }
 
-    .map-loading.hidden {
-      opacity: 0;
-    }
+    .map-loading.hidden { display: none; }
 
     .spinner {
-      width: 32px; height: 32px;
-      border: 2px solid rgba(126,212,230,0.15);
+      width: 30px; height: 30px;
+      border: 2px solid rgba(126,212,230,0.1);
       border-top-color: var(--c-accent);
       border-radius: 50%;
-      animation: spin 0.9s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .map-loading p {
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--c-muted);
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      body { padding: 24px 16px 48px; }
-      .page-header { flex-direction: column; align-items: flex-start; }
-      .page-header-right { text-align: left; }
-      .map-embed--fixed iframe { height: 400px; }
-      .card-footer { flex-wrap: wrap; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- PAGE HEADER -->
-  <div class="page-header">
-    <div class="page-header-left">
-      <p class="eyebrow">Eau'bservatoire · Campus TPG</p>
-      <h1>Représentations <span>cartographiques</span></h1>
-    </div>
-    <div class="page-header-right">
-      Campus Talence–Pessac–Gradignan<br>
-      ArcGIS Online · MSHA
-    </div>
-  </div>
-
   <div class="map-stack">
-
-    <!-- ── CARTES 2 & 3 : MapViewer (onglets) ── -->
     <div class="map-card">
+      
       <div class="card-header">
         <div class="card-header-left">
           <div class="card-icon">🗺️</div>
           <div class="card-meta">
-            <p class="card-label">Cartographie interactive</p>
+            <p class="card-label">Eau'bservatoire</p>
             <p class="card-title">Base cartographique — Campus TPG</p>
           </div>
         </div>
-        <span class="status-dot">En ligne</span>
       </div>
 
       <div class="card-tabs">
-        <button class="tab-btn active" onclick="switchTab('vue-large', this)">
-          Vue d'ensemble
-        </button>
-        <button class="tab-btn" onclick="switchTab('vue-detail', this)">
-          Vue détaillée
-        </button>
+        <button class="tab-btn active" onclick="switchTab('vue-large', this)">Vue d'ensemble</button>
+        <button class="tab-btn" onclick="switchTab('vue-detail', this)">Vue détaillée</button>
       </div>
 
-      <!-- Vue large -->
       <div id="vue-large" class="viewer-panel active">
         <div class="map-embed map-embed--fixed">
-          <div class="map-loading" id="loading-large">
-            <div class="spinner"></div>
-            <p>Chargement de la carte…</p>
-          </div>
-          <iframe
-            allow="local-network-access; geolocation"
-            title="CARTO_BASE_EAUBS — Vue d'ensemble"
-            src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?configurableview=true&webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark&legend=true&scroll=false&basemaps=true&center=-0.607684590427117,44.8003442281803&scale=18055.9548215"
-            loading="lazy"
-            onload="hideLoader('loading-large')">
-          </iframe>
+          <div class="map-loading" id="l-large"><div class="spinner"></div></div>
+          <iframe src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark" onload="document.getElementById('l-large').style.display='none'"></iframe>
         </div>
       </div>
 
-      <!-- Vue détaillée -->
-      <div id="vue-detail" class="viewer-panel">
+      <div id="vue-detail" class="viewer-panel" style="display:none">
         <div class="map-embed map-embed--fixed">
-          <div class="map-loading" id="loading-detail">
-            <div class="spinner"></div>
-            <p>Chargement de la carte…</p>
-          </div>
-          <iframe
-            allow="local-network-access; geolocation"
-            title="CARTO_BASE_EAUBS — Vue détaillée"
-            src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?configurableview=true&webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark&legend=true&scroll=false&center=-0.6076845904271172,44.800435581980196&scale=18055.9548215"
-            loading="lazy"
-            onload="hideLoader('loading-detail')">
-          </iframe>
+          <div class="map-loading" id="l-detail"><div class="spinner"></div></div>
+          <iframe src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark&center=-0.607,44.800&scale=10000" onload="document.getElementById('l-detail').style.display='none'"></iframe>
         </div>
       </div>
 
-      <div class="card-footer">
-        <div class="card-footer-info">
-          <span>ArcGIS MapViewer</span>
-          <span>MSHA · WebMap 38e5e248</span>
-          <span>Thème sombre</span>
-        </div>
-        <a class="btn-open"
-           href="https://msha.maps.arcgis.com/apps/mapviewer/index.html?webmap=38e5e248b5674fc5a711974c6412f07d"
-           target="_blank" rel="noopener noreferrer">
-          Ouvrir
-          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
-      </div>
     </div>
-    
+  </div>
+
+  <script>
+    function switchTab(id, btn) {
+      document.querySelectorAll('.viewer-panel').forEach(p => p.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).style.display = 'block';
+      btn.classList.add('active');
+    }
+  </script>
 </body>
 </html>
