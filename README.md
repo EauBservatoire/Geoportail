@@ -1,1 +1,194 @@
 # Géoportail
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartes — Eau'bservatoire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --c-deep:    #011e28;
+      --c-primary: #0a3a50;
+      --c-mid:      #2A8A9D;
+      --c-light:   #3F9DB4;
+      --c-teal:    #1B726E;
+      --c-accent:  #7ed4e6;
+      --c-cream:   #f1fcfd;
+      --c-line:    rgba(126,212,230,0.15);
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --radius: 10px;
+    }
+
+    /* Reset total pour coller aux bords comme le modèle 3D */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--c-deep);
+      color: var(--c-cream);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      padding: 0; /* Suppression du padding du body */
+      overflow-x: hidden;
+    }
+
+    /* Conteneur principal sans marge haute inutile */
+    .map-stack {
+      width: 100%;
+      max-width: 100%; /* Occupation totale de la largeur */
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── MAP CARD MODIFIÉE ── */
+    .map-card {
+      background: var(--c-deep);
+      border: none; /* Suppression des bordures pour fusionner avec le fond */
+      border-radius: 0; 
+      overflow: hidden;
+    }
+
+    /* CARD HEADER : Inspiré de la topbar du modèle 2 */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--c-line);
+      background: rgba(10, 10, 30, 0.92); /* Couleur de la topbar du modèle 2 */
+      gap: 16px;
+      height: 56px;
+    }
+
+    .card-header-left { display: flex; align-items: center; gap: 12px; }
+
+    .card-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .card-meta .card-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+    }
+
+    .card-meta .card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* ── TABS : Style épuré ── */
+    .card-tabs {
+      display: flex;
+      background: rgba(0,0,0,0.2);
+      padding: 0 10px;
+      border-bottom: 1px solid var(--c-line);
+    }
+
+    .tab-btn {
+      padding: 12px 20px;
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--c-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--c-accent);
+      border-bottom-color: var(--c-accent);
+    }
+
+    /* ── MAP EMBED : Pleine hauteur ── */
+    .map-embed--fixed iframe {
+      width: 100%;
+      height: calc(100vh - 110px); /* Ajuste la hauteur pour remplir l'écran moins le header/tabs */
+      border: none;
+      display: block;
+    }
+
+    /* Loader */
+    .map-loading {
+      position: absolute;
+      inset: 0;
+      background: var(--c-deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .map-loading.hidden { display: none; }
+
+    .spinner {
+      width: 30px; height: 30px;
+      border: 2px solid rgba(126,212,230,0.1);
+      border-top-color: var(--c-accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body>
+
+  <div class="map-stack">
+    <div class="map-card">
+      
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">🗺️</div>
+          <div class="card-meta">
+            <p class="card-label">Eau'bservatoire</p>
+            <p class="card-title">Base cartographique — Campus TPG</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-tabs">
+        <button class="tab-btn active" onclick="switchTab('vue-large', this)">Vue d'ensemble</button>
+        <button class="tab-btn" onclick="switchTab('vue-detail', this)">Vue détaillée</button>
+      </div>
+
+      <div id="vue-large" class="viewer-panel active">
+        <div class="map-embed map-embed--fixed">
+          <div class="map-loading" id="l-large"><div class="spinner"></div></div>
+          <iframe src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark" onload="document.getElementById('l-large').style.display='none'"></iframe>
+        </div>
+      </div>
+
+      <div id="vue-detail" class="viewer-panel" style="display:none">
+        <div class="map-embed map-embed--fixed">
+          <div class="map-loading" id="l-detail"><div class="spinner"></div></div>
+          <iframe src="https://msha.maps.arcgis.com/apps/mapviewer/index.html?webmap=38e5e248b5674fc5a711974c6412f07d&theme=dark&center=-0.607,44.800&scale=10000" onload="document.getElementById('l-detail').style.display='none'"></iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function switchTab(id, btn) {
+      document.querySelectorAll('.viewer-panel').forEach(p => p.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).style.display = 'block';
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
